@@ -93,7 +93,9 @@ router.post(
     }
     const passwordcompare=await bcrypt.compare(password,user.password);
      if (!passwordcompare) {
-      return res.status(400).json({ errors: "please try to login with the correct credentials" });
+      let success=flase;
+
+      return res.status(400).json({success, errors: "please try to login with the correct credentials" });
     }
     const data={
         user:{
@@ -101,7 +103,8 @@ router.post(
         }
       }
       const authtoken=jwt.sign(data,JWT_tokens);
-      res.json(authtoken);
+      let success=true;
+      res.json({success,authtoken});
         
     } catch (error) {
       console.error(error.message);

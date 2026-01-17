@@ -1,10 +1,14 @@
-import React from 'react'
+
+import { Form } from 'react-router-dom'
+import Notes from './Notes';
+
 
 const Home = () => {
+  
   return (
-    <div>
-      This is home
-    </div>
+    <>
+    <Notes/>
+    </>
   )
 }
 
