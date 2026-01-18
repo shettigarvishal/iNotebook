@@ -1,13 +1,13 @@
 
-import { Form } from 'react-router-dom'
 import Notes from './Notes';
 
 
-const Home = () => {
+const Home = (props) => {
   
+  const {showAlert}=props;
   return (
     <>
-    <Notes/>
+    <Notes showAlert={showAlert}/>
     </>
   )
 }

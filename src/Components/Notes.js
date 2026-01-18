@@ -2,20 +2,31 @@ import React, { useContext, useEffect, useRef,useState } from "react";
 import NoteContext from "../Context/notes/NoteContext";
 import NoteItem from "./NoteItem";
 import Addnote from "./Addnote";
+import { useNavigate } from "react-router-dom";
 
-function Notes() {
+function Notes(props) {
   const { notes, getnote,editnote } = useContext(NoteContext);
   const ref = useRef(null);
   const refclose = useRef(null);
   const [note, setNote] = useState({ id:"",etitle: "", edescription: "", etag: "" });
-
+  const history=useNavigate();
   useEffect(() => {
-    getnote(); 
-    // eslint-disable-next-line 
+    if(localStorage.getItem("token"))
+    {
+      getnote(); 
+       // eslint-disable-next-line 
+    }
+    else
+    {
+      history('/login')
+    }
+    
+   
   }, []); // added getnote as dependency for React rules
   const updatenote = (currentnote) => {
     ref.current.click();
     setNote({id:currentnote._id,etitle:currentnote.title,edescription:currentnote.description,etag:currentnote.tag});
+    
   };
 
   
@@ -24,6 +35,7 @@ function Notes() {
     //console.log("updating");
     editnote(note.id,note.etitle,note.edescription,note.etag)
     refclose.current.click();
+    props.showAlert("Updated Successfully","success")
     // Prevent adding note if title or description is empty
   }
 
@@ -34,7 +46,7 @@ function Notes() {
 
   return (
     <>
-      <Addnote />
+      <Addnote showAlert={props.showAlert} />
       <button
         type="button"
         className="btn btn-primary d-none"
@@ -131,7 +143,7 @@ function Notes() {
           {notes.length===0&&'No notes to display. Add one above!'}
           </div>
            { notes.map((note) => (
-              <NoteItem key={note._id} updatenote={updatenote} note={note} />
+              <NoteItem key={note._id} updatenote={updatenote} note={note} showAlert={props.showAlert} />
             ))
            } 
            

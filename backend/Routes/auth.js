@@ -23,12 +23,14 @@ router.post(
   async (req, res) => {
     //If there is error returns bad request and error
     const errors = validationResult(req);
+    
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
     try {
       //Check whether the user with this email exist already
-      let user = await User.findOne({ email: req.body.email });
+      success=false;
+      let user = await User.findOne({success,email: req.body.email });
       if (user) {
         return res
           .status(400)
@@ -59,16 +61,17 @@ router.post(
             id:user.id
         }
       }
+      success=true;
       const authtoken=jwt.sign(data,JWT_tokens);
     //   console.log(jwtdata);
-      res.json(authtoken);
+      res.json(success,authtoken);
 
 
 
 
     } catch (error) {
       console.error(error.message);
-      res.status(500).send("Internal server error");
+      res.status(500).send(success,"Internal server error");
     }
   }
 );

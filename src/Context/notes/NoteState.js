@@ -13,9 +13,8 @@ const NoteState = (props) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-         "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjk2YjY3MjVhYzU3Mjk0ODAxMzE1NWEzIn0sImlhdCI6MTc2ODY0NjQzN30.VVpTfUrC_ufMbcl1tnyMIuafVRgoDHHZ-bGLWEcMNeA",
-      },
+         "auth-token":localStorage.getItem('token'),
+        },
       });
       const json = await response.json();
       setNotes(json);
@@ -32,7 +31,7 @@ const NoteState = (props) => {
         headers: {
           "Content-Type": "application/json",
          "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjk2YjY3MjVhYzU3Mjk0ODAxMzE1NWEzIn0sImlhdCI6MTc2ODY0NjQzN30.VVpTfUrC_ufMbcl1tnyMIuafVRgoDHHZ-bGLWEcMNeA",
+          localStorage.getItem('token'),
       },
         body: JSON.stringify({ title, description, tag }),
       });
@@ -45,26 +44,32 @@ const NoteState = (props) => {
   };
 
   // Delete a note
-  const deletenote = async (id) => {
-    try {
-      const response = await fetch(`${host}/api/note/delete/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
+// NoteState.js (inside your context provider)
+const deletenote = async (id) => {
+  try {
+    // 1️⃣ Delete from backend
+    const response = await fetch(`${host}/api/note/delete/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
         "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjk2YjY3MjVhYzU3Mjk0ODAxMzE1NWEzIn0sImlhdCI6MTc2ODY0NjQzN30.VVpTfUrC_ufMbcl1tnyMIuafVRgoDHHZ-bGLWEcMNeA",
+          localStorage.getItem('token'),
       },
-      });
+    });
 
-      // Only log response if backend returns JSON
-      const json = await response.json().catch(() => null);
-      console.log("Deleted note:", json);
+    // Optional: log response
+    const json = await response.json().catch(() => null);
+    console.log("Deleted note:", json);
 
-      setNotes((prevNotes) => prevNotes.filter((note) => note._id !== id));
-    } catch (error) {
-      console.error("Error deleting note:", error);
-    }
-  };
+    // 2️⃣ Update frontend state immediately
+    setNotes((prevNotes) => prevNotes.filter((note) => note._id !== id));
+
+    
+  } catch (error) {
+    console.error("Error deleting note:", error);
+  }
+};
+
 
   // Edit a note
   const editnote = async (id, title, description, tag) => {
@@ -74,7 +79,7 @@ const NoteState = (props) => {
         headers: {
           "Content-Type": "application/json",
          "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjk2YjY3MjVhYzU3Mjk0ODAxMzE1NWEzIn0sImlhdCI6MTc2ODY0NjQzN30.VVpTfUrC_ufMbcl1tnyMIuafVRgoDHHZ-bGLWEcMNeA",
+          localStorage.getItem('token'),
       },
         body: JSON.stringify({ title, description, tag }),
       });
